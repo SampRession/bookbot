@@ -91,7 +91,6 @@ def main():
     count = count_words(content)
     char_count_dict = count_characters(content)
     generate_report(book, count, char_count_dict)
-    # dict_to_list(char_count_dict)
 
 
 if __name__ == "__main__":
