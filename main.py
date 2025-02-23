@@ -1,63 +1,38 @@
-"""
-Here is the main.py docstring.
-"""
+import sys
+
+from stats import count_characters, count_words
 
 
 def read_content(book: str):
     """
     Read content of a text file and store it in a variable, then return it.
     """
-    with open(f"books/{book}.txt", encoding="utf8") as f:
+    with open(book, encoding="utf8") as f:
         file_content = f.read()
 
         return file_content
 
 
-def count_words(text: str):
-    """
-    Split string in a list and return the number of words in this list.
-    """
-    word_list = text.split()
-    count = len(word_list)
-
-    return count
-
-
-def count_characters(text: str):
-    """
-    Count how many times each character appears in a string, and return the result as a dictionary.
-    Return dict is structured this way: {"char1": "nb_char1", "char2": "nb_char2"...}.
-    """
-    char_count_dict = {}
-    for c in text:
-        c = c.lower()
-        if not c in char_count_dict:
-            char_count_dict[c] = 1
-        else:
-            char_count_dict[c] += 1
-
-    sorted_dict = dict(
-        sorted(char_count_dict.items(), key=lambda item: item[1], reverse=True)
-    )
-
-    return sorted_dict
-
-
 def generate_report(book: str, count: int, char_dict: dict):
     """
     Generate and return a complete report about the text.
-    This report contains total words count and individual character occurrences.
+    This report contains total words count and individual
+    character occurrences.
     """
     # sorted_dict = sorted(char_dict, key=char_dict.get)
     total_string = generate_char_report_string(char_dict)
 
     report = f"""
---- START Report of books/{book}.txt ---
+========== BOOKBOT ==========
+Analyzing book found at books/{book}
+
+--------- Word Count --------
 {count} words found in the document.
 
+------ Character Count ------
 {total_string}
 
---- Report END ---
+============ END ============
     """
 
     print(report)
@@ -71,9 +46,7 @@ def generate_char_report_string(char_dict: dict):
     total_string = ""
     for char in char_dict:
         if char.isalpha():
-            char_string = (
-                f"The '{char}' character was found {char_dict.get(char)} times"
-            )
+            char_string = f"{char}: {char_dict.get(char)}"
             string_list.append(char_string)
 
     for s in string_list:
@@ -86,7 +59,11 @@ def main():
     """
     Main function for bookbot program
     """
-    book = "frankenstein"
+    if len(sys.argv) < 2:
+        print("Usage: python3 main.py <path_to_book>")
+        sys.exit(1)
+
+    book = sys.argv[1]
     content = read_content(book)
     count = count_words(content)
     char_count_dict = count_characters(content)
